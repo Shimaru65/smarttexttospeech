@@ -73,6 +73,14 @@ LANGUAGES = {
             {"id": "ja-JP-KeitaNeural",  "name": "Keita",  "gender": "male",   "display": "敬太 (男)"},
         ],
     },
+    "my-MM": {
+        "name": "ဗမာစာ (Burmese)",
+        "flag": "🇲🇲",
+        "voices": [
+            {"id": "my-MM-NilarNeural", "name": "Nilar", "gender": "female", "display": "နီလာ (မိန်းမ)"},
+            {"id": "my-MM-ThihaNeural", "name": "Thiha", "gender": "male",   "display": "သီဟ (ယောက်ျား)"},
+        ],
+    },
 }
 
 SAFE_FILENAME = set("abcdefghijklmnopqrstuvwxyz0123456789-.")
