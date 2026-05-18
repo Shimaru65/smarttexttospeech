@@ -28,3 +28,9 @@ desktop.ini
 start_silent.vbs
 start_flask.bat
 .claude/
+
+# Build output
+dist/
+build/
+icon.ico
+*.spec.bak

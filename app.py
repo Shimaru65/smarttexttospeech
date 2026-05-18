@@ -14,12 +14,19 @@ def run_in_new_loop(coro):
     with concurrent.futures.ThreadPoolExecutor(max_workers=1) as pool:
         return pool.submit(asyncio.run, coro).result(timeout=60)
 
-app = Flask(__name__)
 
-# Use absolute path so the app works regardless of the working directory (important for production WSGI servers)
-BASE_DIR  = Path(__file__).parent
-AUDIO_DIR = BASE_DIR / "audio"
-AUDIO_DIR.mkdir(exist_ok=True)
+# When running as a frozen .exe (via main.py), paths are injected via env vars.
+# When running as a plain script, fall back to the file's own directory.
+_base = Path(__file__).parent
+_tmpl   = os.environ.get('TTS_TEMPLATE_FOLDER') or str(_base / 'templates')
+_static = os.environ.get('TTS_STATIC_FOLDER')   or str(_base / 'static')
+_audio  = os.environ.get('TTS_AUDIO_DIR')        or str(_base / 'audio')
+
+app = Flask(__name__, template_folder=_tmpl, static_folder=_static)
+
+BASE_DIR  = _base
+AUDIO_DIR = Path(_audio)
+AUDIO_DIR.mkdir(parents=True, exist_ok=True)
 
 LANGUAGES = {
     "th-TH": {
