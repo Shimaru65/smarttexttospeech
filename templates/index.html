@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="th" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SmartTextToSpeech — Thai TTS</title>
+  <meta name="description" content="แปลงข้อความเป็นเสียงพูดภาษาไทยฟรี รองรับหลายภาษา ดาวน์โหลด MP3" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎙️</text></svg>" />
+</head>
+<body>
+
+  <!-- Animated background orbs -->
+  <div class="bg-orbs" aria-hidden="true">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </div>
+
+  <div class="wrapper">
+
+    <!-- ── Navbar ── -->
+    <nav class="navbar" role="navigation">
+      <div class="container">
+        <div class="brand">
+          <div class="brand-icon" aria-hidden="true">🎙️</div>
+          <span class="brand-name">SmartTextToSpeech</span>
+        </div>
+        <div class="nav-actions">
+          <button class="theme-btn" id="themeBtn" aria-label="Toggle theme" title="Toggle dark/light mode">☀️</button>
+        </div>
+      </div>
+    </nav>
+
+    <!-- ── Hero ── -->
+    <header class="hero">
+      <div class="container">
+        <div class="hero-badge">
+          <span class="dot"></span>
+          ฟรี · ไม่ต้องสมัครสมาชิก · ทำงานในเครื่อง
+        </div>
+        <h1>แปลงข้อความเป็น<br /><span>เสียงพูดภาษาไทย</span></h1>
+        <p>รองรับหลายภาษา เลือกเสียงชาย-หญิง ปรับความเร็ว และดาวน์โหลดเป็นไฟล์ MP3 ได้ทันที</p>
+      </div>
+    </header>
+
+    <!-- ── Main Content ── -->
+    <main>
+      <div class="container">
+
+        <!-- Form Card -->
+        <div class="glass-card form-card">
+
+          <!-- Language & Voice -->
+          <p class="section-label">ตั้งค่าภาษาและเสียง</p>
+
+          <div class="settings-row">
+            <!-- Language -->
+            <div class="form-group">
+              <label class="form-label" for="langSelect">🌐 ภาษา / Language</label>
+              <select id="langSelect" aria-label="Select language"></select>
+            </div>
+
+            <!-- Voice -->
+            <div class="form-group">
+              <label class="form-label" for="voiceSelect">🎤 เสียง / Voice</label>
+              <select id="voiceSelect" aria-label="Select voice"></select>
+            </div>
+          </div>
+
+          <!-- Gender Filter -->
+          <div class="form-group" style="margin-bottom: 22px;">
+            <label class="form-label">⚧ เพศของเสียง / Gender</label>
+            <div class="gender-tabs" role="group" aria-label="Voice gender">
+              <button class="gender-tab active" data-gender="female" aria-pressed="true">
+                ♀ หญิง / Female
+              </button>
+              <button class="gender-tab" data-gender="male" aria-pressed="false">
+                ♂ ชาย / Male
+              </button>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <!-- Speed & Pitch Sliders -->
+          <p class="section-label">ปรับความเร็วและระดับเสียง</p>
+
+          <div class="slider-group">
+            <!-- Speed -->
+            <div class="slider-wrap">
+              <div class="slider-header">
+                <span class="slider-label">🚀 ความเร็ว / Speed</span>
+                <span class="slider-value" id="speedVal">+0%</span>
+              </div>
+              <input
+                type="range" id="speedSlider"
+                min="-50" max="50" step="5" value="0"
+                aria-label="Speech speed"
+              />
+              <div style="display:flex;justify-content:space-between;font-size:0.7rem;color:var(--text-muted);margin-top:2px;">
+                <span>ช้า</span><span>ปกติ</span><span>เร็ว</span>
+              </div>
+            </div>
+
+            <!-- Pitch -->
+            <div class="slider-wrap">
+              <div class="slider-header">
+                <span class="slider-label">🎵 ระดับเสียง / Pitch</span>
+                <span class="slider-value" id="pitchVal">+0Hz</span>
+              </div>
+              <input
+                type="range" id="pitchSlider"
+                min="-50" max="50" step="5" value="0"
+                aria-label="Speech pitch"
+              />
+              <div style="display:flex;justify-content:space-between;font-size:0.7rem;color:var(--text-muted);margin-top:2px;">
+                <span>ต่ำ</span><span>ปกติ</span><span>สูง</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <!-- Text Input -->
+          <p class="section-label">พิมพ์หรือวางข้อความ</p>
+
+          <!-- Stats Row -->
+          <div class="stats-row" style="margin-bottom:14px;">
+            <div class="stat-item">
+              <div class="stat-value" id="statChars">0</div>
+              <div class="stat-label">ตัวอักษร</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-value" id="statWords">0</div>
+              <div class="stat-label">คำ</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-value" id="statSize">—</div>
+              <div class="stat-label">ขนาดไฟล์</div>
+            </div>
+          </div>
+
+          <div class="textarea-wrap">
+            <textarea
+              id="textInput"
+              class="text-input"
+              placeholder="พิมพ์หรือวางข้อความภาษาไทยที่นี่...&#10;&#10;Type or paste Thai text here..."
+              maxlength="5000"
+              aria-label="Text to convert to speech"
+              spellcheck="false"
+            ></textarea>
+            <span class="char-count" id="charCount" aria-live="polite">0 / 5,000</span>
+          </div>
+
+          <!-- Generate Button -->
+          <button class="btn-generate" id="generateBtn" aria-label="Generate speech">
+            <span class="btn-icon" id="btnIcon">🎙️</span>
+            <span id="btnText">สร้างเสียงพูด</span>
+          </button>
+
+          <div style="text-align:center;font-size:0.75rem;color:var(--text-muted);margin-top:10px;">
+            หรือกด <kbd style="background:var(--bg-input);border:1px solid var(--border);padding:1px 6px;border-radius:4px;">Ctrl + Enter</kbd> เพื่อสร้างเสียง
+          </div>
+
+          <!-- Status Bar -->
+          <div class="status-bar" id="statusBar" role="status" aria-live="polite">
+            <span id="statusIcon"></span>
+            <span id="statusMsg"></span>
+            <div class="progress-wrap" id="progressWrap" style="display:none">
+              <div class="progress-bar"></div>
+            </div>
+          </div>
+
+        </div><!-- /form-card -->
+
+        <!-- Player Card -->
+        <div class="glass-card player-card" id="playerCard" aria-label="Audio preview">
+
+          <div class="player-header">
+            <div class="player-title">
+              <div class="icon">🔊</div>
+              ผลลัพธ์เสียงพูด
+            </div>
+            <span class="file-info" id="fileInfo">MP3</span>
+          </div>
+
+          <div class="audio-player-wrap">
+            <audio id="audioEl" class="native-audio" controls preload="none" aria-label="Generated speech audio">
+              Your browser does not support the audio element.
+            </audio>
+          </div>
+
+          <a
+            id="downloadBtn"
+            class="btn-download"
+            href="#"
+            download="speech.mp3"
+            role="button"
+            aria-label="Download MP3 file"
+          >
+            ⬇️ ดาวน์โหลด MP3
+          </a>
+
+        </div><!-- /player-card -->
+
+      </div><!-- /container -->
+    </main>
+
+    <!-- ── Footer ── -->
+    <footer>
+      <div class="container">
+        <p>
+          สร้างด้วย ❤️ โดยใช้ <span>Microsoft Edge TTS</span> + <span>Flask</span>
+          &nbsp;·&nbsp; ทำงานบนเครื่องของคุณ · ฟรี 100%
+        </p>
+      </div>
+    </footer>
+
+  </div><!-- /wrapper -->
+
+  <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>

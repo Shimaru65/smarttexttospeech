@@ -1,0 +1,30 @@
+# Generated audio files (temporary, auto-deleted)
+audio/*.mp3
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+venv/
+.venv/
+env/
+*.egg-info/
+dist/
+build/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Local dev only — not needed on server
+start_silent.vbs
+start_flask.bat
+.claude/

@@ -1,0 +1,25 @@
+[Unit]
+Description=SmartTextToSpeech — Thai TTS Application
+After=network.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=www-data
+Group=www-data
+WorkingDirectory=/var/www/smarttexttospeech
+Environment="PATH=/var/www/smarttexttospeech/venv/bin"
+ExecStart=/var/www/smarttexttospeech/venv/bin/gunicorn --config gunicorn.conf.py wsgi:app
+
+# Auto-restart on crash
+Restart=on-failure
+RestartSec=5
+StartLimitIntervalSec=60
+StartLimitBurst=3
+
+# Security hardening
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
